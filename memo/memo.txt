@@ -1,0 +1,28 @@
+■起動手順
+  アプリ起動
+    nodemon [監視するディレクトリ]でサーバを起動し、npm install ~するときだけcontroll + cでサーバを停止
+    npm install ~したあとはnodemon [監視するディレクトリ]でサーバーを起動
+    →[Sun Oct 22 16:12:23]text_node_express_mysql Dmill$ nodemon text_node_express_mysql
+  画面アクセス
+    localhost:3000
+  MySQL起動(ローカル)
+    $ mysql.server start
+■ソース
+  ▼依存関係
+    moment.jsとか、全部グローバル(-g)でインストールして使おう
+    ・moment.js
+    ・MySQL
+  ▼ディレクトリ(ローカル)
+    /Users/Dmill/Dropbox/01_codes/text_node_express_mysql
+  ▼個別
+    routes/index.js
+      ・res.render()のviewファイル
+        app.jsのapp.set()により'views'と定められたviewフォルダ(path.join(__dirname, 'views')配下の'index'
+        →即ちindex.ejs
+      ・情報の進み方
+        ブラウザから送信されたものは、index.ejsにまず行く？index.ejsとindex.jsはどっちが先に参照される？どっちからどっちが呼び出される？
+■エラー
+  Error: Can't set headers after they are sent.
+    あるルートの中で一度レスポンスを返した場合に、別のレスポンスを返そうとした場合に発生するエラー
+    Node.jsではノンブロッキングI/Oという性質から、この場合でも同時に２つの返り値を出してしまうことがある。
+    対処法は、なんてことはない。しっかりと分岐条件を分けて書くこと。
