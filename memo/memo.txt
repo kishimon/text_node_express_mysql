@@ -142,20 +142,20 @@
         bulletin_board
 
     アプリ起動
-    cd text_node_express_mysql
-    npm install -g -S moment
-    npm install -g -S mysql
-    node ./bin/www
+      cd text_node_express_mysql
+      npm install -g -S moment
+      npm install -g -S mysql
+      node ./bin/www
 
     アプリ停止
-    ps aux | grep node
-    kill -9 <PROCESS_ID>
+      ps aux | grep node
+      kill -9 <PROCESS_ID>
 
     画面アクセス
     http://52.192.154.186:3000
     http://52.68.5.174:3000
 
-    ELB経由で画面アクセス
+    EC2直で画面アクセス
       EC2_1のアプリ起動
         ssh -i .ssh/AWS_Workshop_02.pem ec2-user@52.192.154.186
         cd text_node_express_mysql
@@ -164,6 +164,7 @@
         ssh -i .ssh/AWS_Workshop_02.pem ec2-user@52.68.5.174
         cd text_node_express_mysql
         node ./bin/www
+    ELB経由で画面アクセス
       http://aws-workshop-02-test-55760466.ap-northeast-1.elb.amazonaws.com/
     express(不要？)
     npm install express-generator -g
