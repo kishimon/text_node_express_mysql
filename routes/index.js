@@ -4,16 +4,9 @@ var moment   = require('moment'); //  moment.jsを読み込む
 var os       = require('os');
 var connection = require('../mysqlConnection'); //  Mysql接続
 
-/* GET home page. */
-// router.get('/', function(req, res, next) {    //  '/'はここではlocalhost:3000/(ルート直下)
-//                                               //  functionはここではコールバック関数
-//   res.render('index', { title: 'Express' });  //  render(viewファイル,←に渡すオブジェクト)
-// });
-
 router.get('/', function(req, res, next) {
-  var query = 'SELECT * FROM boards';
+  var query = 'SELECT * FROM boards ORDER BY board_id DESC LIMIT 20';
   connection.query(query, function(err, rows) {
-    console.log(rows);
     res.render('index', {
       title: 'testApp',
       boardList: rows
@@ -24,9 +17,6 @@ router.get('/', function(req, res, next) {
 router.post('/', function(req, res, next){
   var title = req.body.title; //  フォームから送られたリクエストを受け取り、name属性titleを格納
   var createdAt = moment().format('YYYY-MM-DD HH:mm:ss');  //  現在時刻を格納
-  console.log(os.networkInterfaces());
-  // var serverIP = os.networkInterfaces().address.replace(".", "_");  //  サーバIPを格納
-  console.log(os.networkInterfaces().en0);
   var interfaces = os.networkInterfaces();
   var addresses = [];
   for (var k in interfaces) {
@@ -37,9 +27,6 @@ router.post('/', function(req, res, next){
           }
       }
   }
-  console.log(addresses);
-
-  //  MySQL
   var query = 'INSERT INTO boards (title, created_at) VALUES ("' + title + " from " + addresses + '", ' + '"' + createdAt + '")';
   connection.query(query, function(err, rows) {
     res.redirect('/');

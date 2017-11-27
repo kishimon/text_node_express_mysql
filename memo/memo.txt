@@ -1,6 +1,7 @@
 ■起動手順
   ▼ローカル
     アプリ起動
+      cd /Users/Dmill/Dropbox/01_codes/text_node_express_mysql
       nodemon [監視するディレクトリ]でサーバを起動し、npm install ~するときだけcontroll + cでサーバを停止
       npm install ~したあとはnodemon [監視するディレクトリ]でサーバーを起動
       →[Sun Oct 22 16:12:23]text_node_express_mysql Dmill$ nodemon text_node_express_mysql
@@ -9,7 +10,6 @@
     MySQL起動(ローカル)
       $ mysql.server start
   ▼サーバ
-    AWSコンソールへのログイン
     AWSのマネジメントコンソールにログインする
       名前：各個人名
       パス：awsstudy@20170830
@@ -22,7 +22,7 @@
       事前に用意したAMIを選択し、作成ボタンを押下する
       画面にしたがって設定していく
         Nameタグ
-          AWS_Workshop_02_test
+          AWS_Workshop_02_氏名_main
         セキュリティグループ 名前はキーNameと一緒
           HTTP  80  0.0.0.0/0, ::/0
           SSH  22  マイIP
@@ -34,13 +34,13 @@
 
     EC2_2台目の作成
       Nameタグ
-        AWS_Workshop_02_test_sub
+        AWS_Workshop_02_氏名_sub
       セキュリティグループ
         デフォルト(1台目と〃)
 
     ELBの作成
       名前
-        AWS-Workshop-02-test
+        AWS-Workshop-02-氏名
       スキーマ
         インターネット向け
       IPアドレスタイプ
@@ -49,21 +49,21 @@
         VPCはデフォルトの
         AZは1a1c両方
       セキュリティグループ
-        AWS-Workshop-02-test
+        AWS-Workshop-02-氏名
       ターゲットグループ
         名前
-          AWSWorkshop02Test
+          AWSWorkshop02氏名
         ほかはそのまま
       2台のEC2を3000番で指定して「登録済み」押下
 
     RDSセキュリティグループの作成
       EC2のセキュリティグループを確認する
       セキュリティグループ名（英語のやつ）をコピー
-        AWS_Workshop_02_test
+        AWS_Workshop_02_氏名
       新しいセキュリティグループを作成する
         ・MySQL：EC2のセキュリティグループ←VPCをデフォルトのvpc-b523fなんちゃらに
         ・Name、グループ名：AWS_Workshop_02_RDS
-          これではないハズ→AWS_Workshop_02_test
+          これではないハズ→AWS_Workshop_02_氏名
         ・インバウンド
           MySQL TCP:3306 任意の場所をソースに
 
@@ -131,6 +131,9 @@
           EC2 AWS_Workshop_02_#01
       GitHubからクローン
       git@github.com:kishimon/text_node_express_mysql.git
+    gitから最新を取得
+      git fetch origin master
+      git reset --hard origin/master
 
     db接続設定
     vi text_node_express_mysql/mysqlConnection.js
@@ -141,29 +144,35 @@
       DB
         bulletin_board
 
-    アプリ起動
+    アプリ起動(ローカル)
+      node /Users/Dmill/Dropbox/01_codes/text_node_express_mysql/bin/www
       cd text_node_express_mysql
       npm install -g -S moment
       npm install -g -S mysql
       node ./bin/www
+      node text_node_express_mysql/bin/www
+    画面アクセス(ローカル)
+      http://localhost:3000
 
     アプリ停止
       ps aux | grep node
       kill -9 <PROCESS_ID>
 
     画面アクセス
-    http://52.192.154.186:3000
-    http://52.68.5.174:3000
+      http://52.192.154.186:3000
+      http://52.68.5.174:3000
 
     EC2直で画面アクセス
       EC2_1のアプリ起動
         ssh -i .ssh/AWS_Workshop_02.pem ec2-user@52.192.154.186
+        node text_node_express_mysql/bin/www
         cd text_node_express_mysql
         node ./bin/www
       EC2_2のアプリ起動
         ssh -i .ssh/AWS_Workshop_02.pem ec2-user@52.68.5.174
         cd text_node_express_mysql
         node ./bin/www
+        node text_node_express_mysql/bin/www
     ELB経由で画面アクセス
       http://aws-workshop-02-test-55760466.ap-northeast-1.elb.amazonaws.com/
     express(不要？)
@@ -186,6 +195,7 @@
       ボードの見た目、もっと縦を詰めて行を増やす
     index.js
       EC2のIPを出力・MySQLに送ることで、ELBの証明
+      →EC2のプライベートIPが出る、これをパブリックIPにしたほうがわかりやすいが
 ■エラー
   Error: Can't set headers after they are sent.
     あるルートの中で一度レスポンスを返した場合に、別のレスポンスを返そうとした場合に発生するエラー
